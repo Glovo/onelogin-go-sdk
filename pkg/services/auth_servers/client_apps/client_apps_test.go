@@ -3,12 +3,14 @@ package clientapps
 import (
 	"encoding/json"
 	"errors"
+
 	"github.com/glovo/onelogin-go-sdk/internal/test"
 	"github.com/glovo/onelogin-go-sdk/pkg/oltypes"
 	"github.com/glovo/onelogin-go-sdk/pkg/services/auth_servers/scopes"
 
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestQuery(t *testing.T) {
@@ -22,10 +24,9 @@ func TestQuery(t *testing.T) {
 			queryPayload: &ClientAppsQuery{AuthServerID: "1"},
 			expectedResponse: []ClientApp{
 				ClientApp{
-					ID:           oltypes.Int32(int32(1)),
-					AuthServerID: oltypes.Int32(int32(1)),
-					APIAuthID:    oltypes.Int32(int32(1)),
-					Name:         oltypes.String("name"),
+					AppID:     oltypes.Int32(int32(1)),
+					APIAuthID: oltypes.Int32(int32(1)),
+					Name:      oltypes.String("name"),
 					Scopes: []scopes.Scope{
 						scopes.Scope{
 							ID:           oltypes.Int32(int32(1)),
@@ -42,10 +43,9 @@ func TestQuery(t *testing.T) {
 					},
 				},
 				ClientApp{
-					ID:           oltypes.Int32(int32(2)),
-					AuthServerID: oltypes.Int32(int32(1)),
-					APIAuthID:    oltypes.Int32(int32(1)),
-					Name:         oltypes.String("name"),
+					AppID:     oltypes.Int32(int32(2)),
+					APIAuthID: oltypes.Int32(int32(1)),
+					Name:      oltypes.String("name"),
 					Scopes: []scopes.Scope{
 						scopes.Scope{
 							ID:           oltypes.Int32(int32(3)),
@@ -66,10 +66,9 @@ func TestQuery(t *testing.T) {
 				ReadFunc: func(r interface{}) ([][]byte, error) {
 					b, err := json.Marshal([]ClientApp{
 						ClientApp{
-							ID:           oltypes.Int32(int32(1)),
-							AuthServerID: oltypes.Int32(int32(1)),
-							APIAuthID:    oltypes.Int32(int32(1)),
-							Name:         oltypes.String("name"),
+							AppID:     oltypes.Int32(int32(1)),
+							APIAuthID: oltypes.Int32(int32(1)),
+							Name:      oltypes.String("name"),
 							Scopes: []scopes.Scope{
 								scopes.Scope{
 									ID:           oltypes.Int32(int32(1)),
@@ -86,10 +85,9 @@ func TestQuery(t *testing.T) {
 							},
 						},
 						ClientApp{
-							ID:           oltypes.Int32(int32(2)),
-							AuthServerID: oltypes.Int32(int32(1)),
-							APIAuthID:    oltypes.Int32(int32(1)),
-							Name:         oltypes.String("name"),
+							AppID:     oltypes.Int32(int32(2)),
+							APIAuthID: oltypes.Int32(int32(1)),
+							Name:      oltypes.String("name"),
 							Scopes: []scopes.Scope{
 								scopes.Scope{
 									ID:           oltypes.Int32(int32(3)),
@@ -142,16 +140,14 @@ func TestCreate(t *testing.T) {
 	}{
 		"it creates a client and associates it with an auth server": {
 			payload: &ClientApp{
-				AuthServerID: oltypes.Int32(int32(1)),
-				Name:         oltypes.String("name"),
-				ScopeIDs:     []int32{int32(1), int32(2)},
+				AppID:     oltypes.Int32(int32(1)),
+				APIAuthID: oltypes.Int32(int32(1)),
+				ScopeIDs:  []int32{int32(1), int32(2)},
 			},
 			expectedResponse: &ClientApp{
-				ID:           oltypes.Int32(int32(1)),
-				AuthServerID: oltypes.Int32(int32(1)),
-				APIAuthID:    oltypes.Int32(int32(1)),
-				Name:         oltypes.String("name"),
-				ScopeIDs:     []int32{int32(1), int32(2)},
+				AppID:     oltypes.Int32(int32(1)),
+				APIAuthID: oltypes.Int32(int32(1)),
+				ScopeIDs:  []int32{int32(1), int32(2)},
 			},
 			repository: &test.MockRepository{
 				CreateFunc: func(r interface{}) ([]byte, error) {
@@ -159,19 +155,18 @@ func TestCreate(t *testing.T) {
 				},
 			},
 		},
-		"it errs out if parent ID not given on payload": {
+		"it errs out if parent AppID not given on payload": {
 			payload: &ClientApp{
 				Name:     oltypes.String("name"),
 				ScopeIDs: []int32{int32(1), int32(2)},
 			},
-			expectedError: errors.New("AuthServerID required on the payload"),
+			expectedError: errors.New("both AppID and APIAuthID are required on the payload"),
 		},
 		"it returns an error": {
 			payload: &ClientApp{
-				AuthServerID: oltypes.Int32(int32(1)),
-				APIAuthID:    oltypes.Int32(int32(1)),
-				Name:         oltypes.String("name"),
-				ScopeIDs:     []int32{int32(3), int32(4)},
+				APIAuthID: oltypes.Int32(int32(1)),
+				Name:      oltypes.String("name"),
+				ScopeIDs:  []int32{int32(3), int32(4)},
 			},
 			expectedError: errors.New("error"),
 			repository: &test.MockRepository{
@@ -204,17 +199,16 @@ func TestUpdate(t *testing.T) {
 	}{
 		"it updates a client": {
 			payload: &ClientApp{
-				ID:           oltypes.Int32(int32(1)),
-				AuthServerID: oltypes.Int32(int32(1)),
-				Name:         oltypes.String("name"),
-				ScopeIDs:     []int32{int32(3), int32(4)},
+				AppID:     oltypes.Int32(int32(1)),
+				APIAuthID: oltypes.Int32(int32(1)),
+				Name:      oltypes.String("name"),
+				ScopeIDs:  []int32{int32(3), int32(4)},
 			},
 			expectedResponse: &ClientApp{
-				ID:           oltypes.Int32(int32(1)),
-				AuthServerID: oltypes.Int32(int32(1)),
-				APIAuthID:    oltypes.Int32(int32(1)),
-				Name:         oltypes.String("name"),
-				ScopeIDs:     []int32{int32(3), int32(4)},
+				AppID:     oltypes.Int32(int32(1)),
+				APIAuthID: oltypes.Int32(int32(1)),
+				Name:      oltypes.String("name"),
+				ScopeIDs:  []int32{int32(3), int32(4)},
 			},
 			repository: &test.MockRepository{
 				UpdateFunc: func(r interface{}) ([]byte, error) {
@@ -224,10 +218,10 @@ func TestUpdate(t *testing.T) {
 		},
 		"it reports an error": {
 			payload: &ClientApp{
-				ID:           oltypes.Int32(int32(1)),
-				AuthServerID: oltypes.Int32(int32(1)),
-				Name:         oltypes.String("name"),
-				ScopeIDs:     []int32{int32(3), int32(4)},
+				AppID:     oltypes.Int32(int32(1)),
+				APIAuthID: oltypes.Int32(int32(1)),
+				Name:      oltypes.String("name"),
+				ScopeIDs:  []int32{int32(3), int32(4)},
 			},
 			expectedError: errors.New("error"),
 			repository: &test.MockRepository{
@@ -238,11 +232,11 @@ func TestUpdate(t *testing.T) {
 		},
 		"it reports an error if no parent resource id given": {
 			payload: &ClientApp{
-				ID:       oltypes.Int32(int32(1)),
+				AppID:    oltypes.Int32(int32(1)),
 				Name:     oltypes.String("name"),
 				ScopeIDs: []int32{int32(3), int32(4)},
 			},
-			expectedError: errors.New("Both ID and AuthServerID are required on the payload"),
+			expectedError: errors.New("both AppID and APIAuthID are required on the payload"),
 		},
 	}
 	for name, test := range tests {
