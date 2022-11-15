@@ -1,0 +1,5 @@
+./vendor
+coverage.out
+bin
+.idea
+.DS_Store
