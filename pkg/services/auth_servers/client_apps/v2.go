@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/glovo/onelogin-go-sdk/pkg/oltypes"
 	"github.com/glovo/onelogin-go-sdk/pkg/services"
 	"github.com/glovo/onelogin-go-sdk/pkg/services/olhttp"
 )
@@ -50,42 +49,30 @@ func (svc *V2Service) Query(query *ClientAppsQuery) ([]ClientApp, error) {
 
 // Create creates a new access token claim in place and returns an error if something went wrong
 func (svc *V2Service) Create(clientApp *ClientApp) error {
-	if clientApp.AuthServerID == nil {
-		return errors.New("AuthServerID required on the payload")
+	if clientApp.AppID == nil || clientApp.APIAuthID == nil {
+		return errors.New("both AppID and APIAuthID are required on the payload")
 	}
-	resp, err := svc.Repository.Create(olhttp.OLHTTPRequest{
-		URL:        fmt.Sprintf("%s/%d/clients", svc.Endpoint, *clientApp.AuthServerID),
+	_, err := svc.Repository.Create(olhttp.OLHTTPRequest{
+		URL:        fmt.Sprintf("%s/%d/clients", svc.Endpoint, *clientApp.APIAuthID),
 		Headers:    map[string]string{"Content-Type": "application/json"},
 		AuthMethod: "bearer",
-		Payload:    clientApp,
+		Payload:    clientApp.asWrite(),
 	})
 	if err != nil {
 		return err
 	}
-
-	respObj := map[string]int32{}
-	json.Unmarshal(resp, &respObj)
-	clientApp.ID = oltypes.Int32(respObj["app_id"])
-	clientApp.APIAuthID = oltypes.Int32(respObj["api_auth_id"])
-
 	return nil
 }
 
 // Update updates an existing access token claim in place or returns an error if something went wrong
 func (svc *V2Service) Update(clientApp *ClientApp) error {
-	if clientApp.ID == nil || clientApp.AuthServerID == nil {
-		return errors.New("Both ID and AuthServerID are required on the payload")
+	if clientApp.AppID == nil || clientApp.APIAuthID == nil {
+		return errors.New("both AppID and APIAuthID are required on the payload")
 	}
-	resp, err := svc.UpdateRaw(*clientApp.AuthServerID, *clientApp.ID, clientApp)
+	_, err := svc.UpdateRaw(*clientApp.APIAuthID, *clientApp.AppID, clientApp.asWrite())
 	if err != nil {
 		return err
 	}
-
-	respObj := map[string]int32{}
-	json.Unmarshal(resp, &respObj)
-	clientApp.ID = oltypes.Int32(respObj["app_id"])
-	clientApp.APIAuthID = oltypes.Int32(respObj["api_auth_id"])
-
 	return nil
 }
 

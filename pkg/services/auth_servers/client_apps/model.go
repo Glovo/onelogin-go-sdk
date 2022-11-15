@@ -7,10 +7,25 @@ type ClientAppsQuery struct {
 }
 
 type ClientApp struct {
-	ID           *int32         `json:"app_id,omitempty"`
-	AuthServerID *int32         `json:"auth_server_id,omitempty"`
-	APIAuthID    *int32         `json:"api_auth_id,omitempty"`
-	Name         *string        `json:"name,omitempty"`
-	Scopes       []scopes.Scope `json:"scopes,omitempty"`
-	ScopeIDs     []int32        `json:"scope_ids,omitempty"`
+	AppID     *int32         `json:"app_id,omitempty"`
+	APIAuthID *int32         `json:"api_auth_id,omitempty"`
+	Name      *string        `json:"name,omitempty"`
+	Scopes    []scopes.Scope `json:"scopes,omitempty"`
+	ScopeIDs  []int32        `json:"scope_ids,omitempty"`
+}
+
+type clientAppsWrite struct {
+	ID        *int32  `json:"app_id,omitempty"`
+	APIAuthID *int32  `json:"api_auth_id,omitempty"`
+	Name      *string `json:"name,omitempty"`
+	Scopes    []int32 `json:"scopes,omitempty"`
+}
+
+func (c *ClientApp) asWrite() *clientAppsWrite {
+	return &clientAppsWrite{
+		ID:        c.AppID,
+		APIAuthID: c.APIAuthID,
+		Name:      c.Name,
+		Scopes:    c.ScopeIDs,
+	}
 }
