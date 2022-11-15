@@ -164,6 +164,7 @@ func TestCreate(t *testing.T) {
 		},
 		"it returns an error": {
 			payload: &ClientApp{
+				AppID:     oltypes.Int32(int32(1)),
 				APIAuthID: oltypes.Int32(int32(1)),
 				Name:      oltypes.String("name"),
 				ScopeIDs:  []int32{int32(3), int32(4)},
