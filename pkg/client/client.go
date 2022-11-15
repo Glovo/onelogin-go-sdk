@@ -10,6 +10,7 @@ import (
 	apprules "github.com/glovo/onelogin-go-sdk/pkg/services/apps/app_rules"
 	authservers "github.com/glovo/onelogin-go-sdk/pkg/services/auth_servers"
 	accesstokenclaims "github.com/glovo/onelogin-go-sdk/pkg/services/auth_servers/access_token_claims"
+	clientapps "github.com/glovo/onelogin-go-sdk/pkg/services/auth_servers/client_apps"
 	"github.com/glovo/onelogin-go-sdk/pkg/services/auth_servers/scopes"
 	legalvalues "github.com/glovo/onelogin-go-sdk/pkg/services/legal_values"
 	"github.com/glovo/onelogin-go-sdk/pkg/services/olhttp"
@@ -47,6 +48,7 @@ type Services struct {
 	SmartHooksEnvVarsV1  *smarthookenvs.V1Service
 	RolesV1              *roles.V1Service
 	PrivilegesV1         *privileges.V1Service
+	ClientAppsV2         *clientapps.V2Service
 }
 
 // NewClient uses the config to generate the api client with services attached, and returns
@@ -90,6 +92,7 @@ func NewClient(cfg *APIClientConfig) (*APIClient, error) {
 			SmartHooksEnvVarsV1:  smarthookenvs.New(resourceRepository, cfg.Url),
 			RolesV1:              roles.New(resourceRepository, cfg.Url),
 			PrivilegesV1:         privileges.New(resourceRepository, cfg.Url),
+			ClientAppsV2:         clientapps.New(resourceRepository, cfg.Url),
 		},
 	}, nil
 }

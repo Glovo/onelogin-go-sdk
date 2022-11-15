@@ -1,5 +1,21 @@
-on: [push, pull_request]
-name: CI
+on:
+  pull_request:
+    paths:
+      - pkg/**
+      - internal/**
+      - go.mod
+      - go.sum
+      - .github/worflows/go.yml
+  push:
+    branches:
+      - main
+    paths:
+      - pkg/**
+      - internal/**
+      - go.mod
+      - go.sum
+      - .github/worflows/go.yml
+name: Test
 jobs:
   tests:
     runs-on: ubuntu-latest
@@ -14,8 +30,4 @@ jobs:
     - name: Vet
       run: go vet ./...
     - name: Test
-      uses: cedrickring/golang-action@master
-      with:
-        args: make test
-    - name: Secure
-      run: make secure
+      run: go test ./...
