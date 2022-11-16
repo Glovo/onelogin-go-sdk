@@ -9,7 +9,7 @@ import (
 	"github.com/glovo/onelogin-go-sdk/pkg/services/olhttp"
 )
 
-const errAppsV2Context = "access token claims v2 service"
+const errAppsV2Context = "client apps v2 service"
 
 // V2Service holds the information needed to interface with a repository
 type V2Service struct {
@@ -26,8 +26,8 @@ func New(repo services.Repository, host string) *V2Service {
 	}
 }
 
-// Query retrieves all the access token claims from the repository that meet the query criteria passed in the
-// request payload. If an empty payload is given, it will retrieve all access token claims.
+// Query retrieves all the client apps from the repository that meet the query criteria passed in the
+// request payload. If an empty payload is given, it will retrieve all client apps.
 func (svc *V2Service) Query(query *ClientAppsQuery) ([]ClientApp, error) {
 	resp, err := svc.Repository.Read(olhttp.OLHTTPRequest{
 		URL:        fmt.Sprintf("%s/%s/clients", svc.Endpoint, query.AuthServerID),
@@ -47,7 +47,7 @@ func (svc *V2Service) Query(query *ClientAppsQuery) ([]ClientApp, error) {
 	return clients, nil
 }
 
-// Create creates a new access token claim in place and returns an error if something went wrong
+// Create creates a new client app in place and returns an error if something went wrong
 func (svc *V2Service) Create(clientApp *ClientApp) error {
 	if clientApp.AppID == nil || clientApp.APIAuthID == nil {
 		return errors.New("both AppID and APIAuthID are required on the payload")
@@ -56,7 +56,7 @@ func (svc *V2Service) Create(clientApp *ClientApp) error {
 		URL:        fmt.Sprintf("%s/%d/clients", svc.Endpoint, *clientApp.APIAuthID),
 		Headers:    map[string]string{"Content-Type": "application/json"},
 		AuthMethod: "bearer",
-		Payload:    clientApp.asWrite(),
+		Payload:    clientApp.asCreate(),
 	})
 	if err != nil {
 		return err
@@ -64,19 +64,19 @@ func (svc *V2Service) Create(clientApp *ClientApp) error {
 	return nil
 }
 
-// Update updates an existing access token claim in place or returns an error if something went wrong
+// Update updates an existing client app in place or returns an error if something went wrong
 func (svc *V2Service) Update(clientApp *ClientApp) error {
 	if clientApp.AppID == nil || clientApp.APIAuthID == nil {
 		return errors.New("both AppID and APIAuthID are required on the payload")
 	}
-	_, err := svc.UpdateRaw(*clientApp.APIAuthID, *clientApp.AppID, clientApp.asWrite())
+	_, err := svc.UpdateRaw(*clientApp.APIAuthID, *clientApp.AppID, clientApp.asUpdate())
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-// UpdateRaw updates an existing access token claim and returns the raw response or an error if something went wrong
+// UpdateRaw updates an existing client app and returns the raw response or an error if something went wrong
 func (svc *V2Service) UpdateRaw(authServerId int32, appId int32, clientApp interface{}) ([]byte, error) {
 	return svc.Repository.Update(olhttp.OLHTTPRequest{
 		URL:        fmt.Sprintf("%s/%d/clients/%d", svc.Endpoint, authServerId, appId),
@@ -86,7 +86,7 @@ func (svc *V2Service) UpdateRaw(authServerId int32, appId int32, clientApp inter
 	})
 }
 
-// Destroy takes the access token claim id and access token claim id and removes the access token claim from the API.
+// Destroy takes the auth server ID and client app id and removes the client app from the API.
 // Returns an error if something went wrong.
 func (svc *V2Service) Destroy(clientId int32, id int32) error {
 	if _, err := svc.Repository.Destroy(olhttp.OLHTTPRequest{
