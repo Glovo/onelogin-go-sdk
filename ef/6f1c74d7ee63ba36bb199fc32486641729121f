@@ -1,0 +1,19 @@
+readme.md
+  s_3fc1e3b0bbd805::t_7ab75e6607d88f 1,3-6,8-9,12-62,64-102,104,106,108-109,115,117-119,121,123-204,206-224
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "ef6f1c74d7ee63ba36bb199fc32486641729121f",
+  "prompts": {},
+  "sessions": {
+    "s_3fc1e3b0bbd805": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3ed691a5-620e-44b5-b147-eb1caab3d10a",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Mohamed Shousha <mohamed.shousha@glovoapp.com>"
+    }
+  }
+}
